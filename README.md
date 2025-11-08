@@ -21,6 +21,4 @@ Given this, you can ignore all files that are named `BUILD`. Any files that cont
 
 ## Generated Files
 
-We extensively use gRPC and Protocol Buffers (Protobuf). Given issues with version compatibility with  Bazel's new MODULE framework, all files are generated manually that matches our internal setup. While we know Bazel supports automatic gRPC and Protobuf generation, this is not a part of the setups until stability in the Bazel registry occurs.
-
-Due to best practice, all generated files are not committed and tracked in this repo due to possible version incompatibilities with your development setup. The `getting_started/README.md` has links to both libraries documentation for instructions on how to setup. If you get errors about "missing" files linked back to the `protos/` directory, you have likely not generated the files.
+We extensively use gRPC and Protocol Buffers (Protobuf). Due to best practice, all generated files are not committed and tracked in this repo due to possible version incompatibilities with your development setup. The `getting_started/README.md` has links to both libraries documentation for instructions on how to setup. If you get errors about "missing" files linked back to the `protos/` directory, you have likely not generated the files.
