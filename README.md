@@ -4,10 +4,10 @@ The repo uses high-level directories to bucket areas of interest. Excluded in th
 
 A summary of those directories:
 
-- getting_started: Contains all proto service definition files and usage instructions required to use RogueDB.
-- benchmarks: Contains all code related to benchmarking RogueDB.
-- blogs: Contains all code examples organized by the following pattern: blogs/[category]/[blog-url]
-- roguedb_driver: Contains utility functions for using RogueDB that will eventually be published as open-source packages for supported languages.
+- `getting_started/`: Contains all proto service definition files and usage instructions required to use RogueDB.
+- `benchmarks/`: Contains all code related to benchmarking RogueDB.
+- `blogs/`: Contains all code examples organized by the following pattern: blogs/[category]/[blog-url]
+- `roguedb_driver/`: Contains utility functions for using RogueDB that will eventually be published as open-source packages for supported languages.
 
 ## Fair Use Notice
 
