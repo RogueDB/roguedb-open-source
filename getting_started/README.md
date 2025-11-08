@@ -13,13 +13,13 @@ The following commands are sufficient with the pre-requisites installed:
 
 Note the first command generates all proto files in the current directory for Python and C++. The second command requires the relative path to `roguedb.proto` and the gRPC plugin to build C++ only files. In both cases, refer to the documentation to determine the right options and pre-requisites for your specific progamming language.
 
-## SSL Certificate
+## SSL/TLS Encryption
 
-In addition, we use TLS/SSL encryption by default for all communication with RogueDB. `openSSL` can be used to retrieve the public certificate. This certificate cycles every 90 days according to Google's SSL Certificate policies. Due to this, you will need to refresh your public certificate when Google refreshes RogueDB's SSL certificate.
+This feature is optional. We encourage folks to use it by default given very little cost in performance or extra code. See the website documentation for an example. 
 
-At the time of writing, on Linux you can do the following to get the public certificate:
+Our SSL certificate is issued by Google's Managed Certificate service and renewed every 90 days. To obtain the server's public certificate, the following command works on Linux:
 
-- Run: `echo | openssl s_client -servername roguedb.dev -connect 34.117.86.181:443 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' >> roguedb.pem`
+- Run: `echo | openssl s_client -servername roguedb.dev -connect 34.117.86.181:443 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'`
 
 Produces a file with an output similar to this:
 
@@ -55,31 +55,3 @@ z3PwCye4xOGb2XoG2bfewlu1sg45Wrql+4l3RBTS98KKCdgQSigvBAlji9vUxvid
 ATHPoJ27tLAMnKRXWB+3rAJGurP95u07Mhs1z1p5wf9IUfFeWA==
 -----END CERTIFICATE-----
 ```
-
-This will put the certificate details into `roguedb.pem` for you to use when establishing a connection. This requires `openssl` to be installed as a package. Note that you will know when the certificate expires when the connection is denied by the server. These details can also be obtained with this command:
-
-- Run: `openssl s_client -showcerts -servername roguedb.dev -connect 34.117.86.181:443`
-
-Gives an output similar to this:
-
-```
-CONNECTED(00000003)
-depth=2 C = US, O = Google Trust Services LLC, CN = GTS Root R1
-verify return:1
-depth=1 C = US, O = Google Trust Services, CN = WR3
-verify return:1
-depth=0 CN = roguedb.dev
-verify return:1
----
-Certificate chain
- 0 s:CN = roguedb.dev
-   i:C = US, O = Google Trust Services, CN = WR3
-   a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA256
-   v:NotBefore: Nov  4 16:13:28 2025 GMT; NotAfter: Feb  2 17:07:21 2026 GMT
------BEGIN CERTIFICATE-----
-...Skipping full contents... 
-Verify return code: 0 (ok)
----
-```
-
-The `NotAfter` specifies the exact time of expiration for applications wanting the precise expiration date.
