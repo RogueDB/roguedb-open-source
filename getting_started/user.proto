@@ -1,0 +1,28 @@
+/* 
+ * Copyright (C) Rogue LLC - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited.
+ * Written by Jacob Bartholomew Blankenship [jacob.blankenship@roguedb.com] - January 2022
+ */
+
+syntax = "proto3";
+
+package rogue.services;
+
+enum Permission
+{
+    NO_PERMISSIONS = 0;
+    EXECUTE = 1;
+    WRITE = 2;
+    WRITE_EXECUTE = 3;
+    READ = 4;
+    READ_EXECUTE = 5;
+    READ_WRITE = 6;
+    READ_WRITE_EXECUTE = 7;
+};
+
+message User
+{
+    string api_key = 1; // index-1
+    map<string, Permission> permissions = 2;
+    bool admin = 3;
+};

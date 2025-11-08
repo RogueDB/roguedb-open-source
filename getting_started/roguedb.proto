@@ -1,0 +1,25 @@
+/* 
+ * Copyright (C) Rogue LLC - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited.
+ * Written by Jacob Bartholomew Blankenship [jacob.blankenship@roguedb.com] - January 2022
+ */
+
+syntax = "proto3";
+
+import "roguedb/core_schemas/queries.proto";
+
+package rogue.services;
+
+service RogueDB
+{
+    rpc subscribe(Subscribe) returns(Response) {}
+    
+    rpc insert(stream Insert) returns(stream Response) {}
+    rpc update(stream Update) returns(stream Response) {}
+    rpc remove(stream Remove) returns(stream Response) {}
+	rpc search(stream Search) returns(stream Response) {}
+
+    rpc reset(Subscribe) returns(Response) {}
+    rpc clear(Credentials) returns(Response) {}
+    rpc restart(Credentials) returns(Response) {}
+}
