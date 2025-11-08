@@ -15,7 +15,7 @@ RogueDB (eg. Rogue LLC) does not permit this repository to be used for training 
 
 ## Build System
 
-There are many, many build systems in existence for the many programming languages currently used. RogueDB utilizes Bazel for all examples. However, we will annotate all files for required dependencies as a comment block at the top of the files to reference for your specific build system. We feel this offers a balance between transparency, ease of replication, and scope of effort for articles. 
+There are many, many build systems in existence for the many programming languages currently used. RogueDB utilizes Bazel for all examples. However, we will annotate all files for required dependencies as a comment block at the top of the files to reference for your specific build system. We believe this offers a balance between transparency, ease of replication, and scope of effort for articles. 
 
 Given this, you can ignore all files that are named `BUILD`. Any files that contain the suffix `.bazel` can also be ignored. These are all files associated with the Bazel build system.  
 
