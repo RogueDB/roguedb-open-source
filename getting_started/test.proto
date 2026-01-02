@@ -1,0 +1,23 @@
+/* 
+* Copyright (C) Rogue LLC - All Rights Reserved
+* Unauthorized copying of this file, via any medium is strictly prohibited.
+* Written by Jacob Bartholomew Blankenship [jacob.blankenship@roguedb.com] - January 2022
+*/
+
+syntax = "proto3";
+
+package rogue.utilities;
+
+message Test
+{
+    int32 attribute1 = 1; // index-1
+    int64 attribute2 = 2; // index-2
+    bool attribute3 = 3; // index-3
+    string attribute4 = 4;
+    uint32 attribute5 = 5;
+    uint64 attribute6 = 6;
+    double attribute7 = 7;
+    double attribute8 = 8;
+    double attribute9 = 9;
+    double attribute10 = 10;
+}

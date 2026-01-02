@@ -6,20 +6,44 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
 import "roguedb/core_schemas/queries.proto";
 
 package rogue.services;
 
 service RogueDB
 {
-    rpc subscribe(Subscribe) returns(Response) {}
-    
-    rpc insert(stream Insert) returns(stream Response) {}
+    // gRPC APIs
+	rpc insert(stream Insert) returns(stream Response) {}
     rpc update(stream Update) returns(stream Response) {}
     rpc remove(stream Remove) returns(stream Response) {}
 	rpc search(stream Search) returns(stream Response) {}
+    rpc subscribe(Subscribe) returns(Response) {
+        option (google.api.http) = {
+            post: "/rest/subscribe",
+            body: "*" }; }
 
-    rpc reset(Subscribe) returns(Response) {}
-    rpc clear(Credentials) returns(Response) {}
-    rpc restart(Credentials) returns(Response) {}
+    // REST APIs
+    rpc rest_insert(Insert) returns(Response) {
+        option (google.api.http) = {
+            post: "/rest/insert",
+            body: "*" }; }
+
+    rpc rest_update(Update) returns(Response) {
+        option (google.api.http) = {
+            patch: "/rest/update",
+            body: "*" }; }
+
+    rpc rest_remove(Remove) returns(Response) {
+        option (google.api.http) = {
+            delete: "/rest/remove",
+            body: "*" }; }
+
+    rpc rest_search(Search) returns(stream Response) {
+        option (google.api.http) = {
+            get: "/rest/search",
+            body: "*" }; }
+
+    // NOTE: Only used for benchmarking.
+    rpc complete(Insert) returns(Response) {}
 }

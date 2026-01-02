@@ -10,38 +10,45 @@ import "google/protobuf/any.proto";
 
 package rogue.services;
 
-message Credentials
-{
-    string identifier = 1; // index-1
-    string api_key = 2; // index-2
-}
-
 message Update
 {
-    Credentials credentials = 1;
+    string api_key = 1;
     repeated google.protobuf.Any messages = 2;
 }
 
 message Remove
 {
-    Credentials credentials = 1;
+    string api_key = 1;
     repeated google.protobuf.Any messages = 2;
 }
 
 message Insert
 {
-    Credentials credentials = 1;
+    string api_key = 1;
     repeated google.protobuf.Any messages = 2;
 }
 
-message Messages
+message Search
 {
-    repeated google.protobuf.Any messages = 1;
+    string api_key = 1;
+    repeated Query queries = 2;
+}
+
+message Subscribe
+{
+    string api_key = 1;
+    repeated string schemas = 2;
 }
 
 message Response
 {
     map<uint64, Messages> results = 1;
+    repeated uint64 finished = 2;
+}
+
+message Messages
+{
+    repeated google.protobuf.Any messages = 1;
 }
 
 enum LogicalOperator
@@ -65,16 +72,22 @@ message Basic
     LogicalOperator logical_operator = 1;
     repeated ComparisonOperator comparisons = 2;
     repeated google.protobuf.Any operands = 3;
+
+    /////////////////////////////////////////////////////////
+    //// SEE ME => BUG w/ index detection in CPP scripts ////
+    /////////////////////////////////////////////////////////
     repeated int32 fields = 4; // Future feature.
 }
 
-// NOTE: Future feature
 message Complex
 {
     repeated LogicalOperator logical_operators = 1;
     repeated Expression expressions = 2;
 }
 
+// Basic: Test.attribute_1 < 10
+// Basic: Test.attribute_1 < 10 and Test.attribute_2 > 5
+// Complex: (Test.attribute_1 < 10 and Test.attribute_2 > 5) or Test.attribute_3 == true
 message Expression
 {
     oneof expression
@@ -100,7 +113,6 @@ message Query
     }
 }
 
-// NOTE: Future feature
 message Mapping
 {
     string identifier = 1;
@@ -109,36 +121,8 @@ message Mapping
     Query task = 4;
 }
 
-// NOTE: Future feature
 message Compositional
 {
     Query initial = 1;
     repeated Mapping mappings = 2;
-}
-
-message Search
-{
-    Credentials credentials = 1;
-    repeated Query queries = 2;
-}
-
-enum Source
-{
-    UNCOMPATIBLE = 0;
-    PROTO = 1;
-    JSON = 2; // NOTE: Future feature
-    CSV = 3; // NOTE: Future feature
-}
-
-message Schema
-{
-    Source source = 1;
-    string filename = 2;
-    string contents = 3;
-}
-
-message Subscribe
-{
-    Credentials credentials = 1;
-    repeated Schema schemas = 2;
 }
