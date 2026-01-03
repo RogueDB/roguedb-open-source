@@ -1,9 +1,3 @@
-/* 
-* Copyright (C) Rogue LLC - All Rights Reserved
-* Unauthorized copying of this file, via any medium is strictly prohibited.
-* Written by Jacob Bartholomew Blankenship [jacob.blankenship@roguedb.com] - January 2022
-*/
-
 syntax = "proto3";
 
 package rogue.utilities;

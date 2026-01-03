@@ -1,9 +1,3 @@
-/* 
- * Copyright (C) Jacob Bartholomew Blankenship - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited.
- * Written by Jacob Bartholomew Blankenship [jacob.blankenship@roguedb.com] - January 2022
-*/
-
 #ifndef COROUTINES_H
 #define COROUTINES_H
 
