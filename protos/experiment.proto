@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "roguedb/core_schemas/queries.proto";
+import "getting_started/queries.proto";
 
 package rogue.services;
 
