@@ -1,0 +1,24 @@
+/* 
+ * Copyright (C) Rogue LLC - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited.
+ * Written by Jacob Bartholomew Blankenship [jacob.blankenship@roguedb.com] - January 2022
+ */
+
+syntax = "proto3";
+
+import "roguedb/core_schemas/queries.proto";
+
+package rogue.services;
+
+service Experiment
+{
+	rpc search(stream Search) returns(stream Response) {}
+
+	rpc singleReadAllWriteAll(stream Search) returns(stream Response) {}
+	rpc singleReadWriteAlternate(stream Search) returns(stream Response) {}
+	rpc singleReadAllNoResponse(stream Search) returns(stream Response) {}
+
+	rpc bulkReadAllWriteAll(stream Search) returns(stream Response) {}
+	rpc bulkReadWriteAlternate(stream Search) returns(stream Response) {}
+	rpc bulkReadAllNoResponse(stream Search) returns(stream Response) {}
+}
