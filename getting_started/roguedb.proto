@@ -1,9 +1,10 @@
 syntax = "proto3";
 
 import "google/api/annotations.proto";
-import "getting_started/queries.proto";
+import "google/protobuf/any.proto";
 
 package rogue.services;
+option go_package = "roguedb/core_schemas";
 
 service RogueDB
 {
@@ -40,4 +41,141 @@ service RogueDB
 
     // NOTE: Only used for benchmarking.
     rpc complete(Insert) returns(Response) {}
+}
+
+message Update
+{
+    string api_key = 1;
+    repeated google.protobuf.Any messages = 2;
+}
+
+message Remove
+{
+    string api_key = 1;
+    repeated google.protobuf.Any messages = 2;
+}
+
+message Insert
+{
+    string api_key = 1;
+    repeated google.protobuf.Any messages = 2;
+}
+
+message Search
+{
+    string api_key = 1;
+    repeated Expression queries = 2;
+}
+
+message Subscribe
+{
+    string api_key = 1;
+    repeated string schemas = 2;
+}
+
+message Response
+{
+    map<uint64, Messages> results = 1;
+    repeated uint64 finished = 2;
+}
+
+message Messages
+{
+    repeated google.protobuf.Any messages = 1;
+}
+
+enum LogicalOperator
+{
+    AND = 0;
+    OR = 1;
+}
+enum ComparisonOperator
+{
+    COMPARISON_OPERATOR_UNKNOWN = 0;
+    EQUAL = 1;
+    NOT_EQUAL = 2;
+    LESSER = 3;
+    LESSER_EQUAL = 4;
+    GREATER = 5;
+    GREATER_EQUAL = 6;
+}
+
+message Basic
+{
+    LogicalOperator logical_operator = 1;
+    repeated ComparisonOperator comparisons = 2;
+    repeated google.protobuf.Any operands = 3;
+    repeated int32 fields = 4; // Future feature.
+}
+
+// The below will be available in the upcoming release.
+// Tentative design outlined below.
+// Subject to change without notice.
+message Complex
+{
+    LogicalOperator logical_operator = 1;
+    repeated Expression expressions = 2;
+}
+
+message Expression
+{
+    oneof expression
+    {
+        Basic basic = 1;
+        Complex complex = 2;
+        Compositional compositional = 3;
+    }
+}
+
+message Mapping
+{
+    string identifier = 1;
+    repeated uint32 input_fields = 2;
+    repeated uint32 output_fields = 3;
+    Expression expression = 4;
+}
+
+message Compositional
+{
+    repeated Mapping mappings = 1;
+}
+
+enum Permission
+{
+    NO_PERMISSIONS = 0;
+    EXECUTE = 1;
+    WRITE = 2;
+    WRITE_EXECUTE = 3;
+    READ = 4;
+    READ_EXECUTE = 5;
+    READ_WRITE = 6;
+    READ_WRITE_EXECUTE = 7;
+}
+
+message User
+{
+    string api_key = 1; // index-1
+    map<string, Permission> permissions = 2;
+    bool admin = 3;
+}
+
+message Test
+{
+    int32 attribute1 = 1; // index-1
+    int64 attribute2 = 2; // index-2
+    bool attribute3 = 3; // index-3
+    string attribute4 = 4;
+    uint32 attribute5 = 5;
+    uint64 attribute6 = 6;
+    double attribute7 = 7;
+    float attribute8 = 8;
+    sint32 attribute9 = 9;
+    sint64 attribute10 = 10;
+    fixed32 attribute11 = 11;
+    fixed64 attribute12 = 12;
+    sfixed32 attribute13 = 13;
+    sfixed64 attribute14 = 14;
+    bytes attribute15 = 15;
+    repeated int32 attribute16 = 16;
+    map<uint32, string> attribute17 = 17;
 }
