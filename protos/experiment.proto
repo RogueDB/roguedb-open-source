@@ -1,8 +1,9 @@
 syntax = "proto3";
 
-import "getting_started/queries.proto";
+import "google/protobuf/any.proto";
 
-package rogue.services;
+option go_package = "roguedb-open-source/protos";
+package rogue.benchmarks;
 
 service Experiment
 {
@@ -15,4 +16,77 @@ service Experiment
 	rpc bulkReadAllWriteAll(stream Search) returns(stream Response) {}
 	rpc bulkReadWriteAlternate(stream Search) returns(stream Response) {}
 	rpc bulkReadAllNoResponse(stream Search) returns(stream Response) {}
+}
+
+message Search
+{
+    string api_key = 1;
+    repeated Expression queries = 2;
+}
+
+message Response
+{
+    map<uint64, Messages> results = 1;
+    repeated uint64 finished = 2;
+}
+
+message Messages
+{
+    repeated google.protobuf.Any messages = 1;
+}
+
+enum LogicalOperator
+{
+    AND = 0;
+    OR = 1;
+}
+enum ComparisonOperator
+{
+    COMPARISON_OPERATOR_UNKNOWN = 0;
+    EQUAL = 1;
+    NOT_EQUAL = 2;
+    LESSER = 3;
+    LESSER_EQUAL = 4;
+    GREATER = 5;
+    GREATER_EQUAL = 6;
+}
+
+message Basic
+{
+    LogicalOperator logical_operator = 1;
+    repeated ComparisonOperator comparisons = 2;
+    repeated google.protobuf.Any operands = 3;
+    repeated int32 fields = 4; // Future feature.
+}
+
+// The below will be available in the upcoming release.
+// Tentative design outlined below.
+// Subject to change without notice.
+message Complex
+{
+    LogicalOperator logical_operator = 1;
+    repeated Expression expressions = 2;
+}
+
+message Expression
+{
+    oneof expression
+    {
+        Basic basic = 1;
+        Complex complex = 2;
+        Compositional compositional = 3;
+    }
+}
+
+message Mapping
+{
+    string identifier = 1;
+    repeated uint32 input_fields = 2;
+    repeated uint32 output_fields = 3;
+    Expression expression = 4;
+}
+
+message Compositional
+{
+    repeated Mapping mappings = 1;
 }

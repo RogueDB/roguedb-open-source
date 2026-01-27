@@ -15,6 +15,7 @@
 
 syntax = "proto3";
 
+option go_package = "google.golang.org/genproto/googleapis/api/annotations;annotations";
 package google.api;
 
 option cc_enable_arenas = true;

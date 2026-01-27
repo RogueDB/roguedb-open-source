@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+option go_package = "roguedb-open-source/protos";
 package rogue.benchmarks;
 
 message Dummy

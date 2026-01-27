@@ -1,0 +1,13 @@
+distribution/
+bazel-*
+google.golang.org/
+
+roguedb/
+roguedb-open-source/
+
+**/*.cc
+**/*.pb.h
+**/*.pb.cc
+**/*pb2_grpc.py
+**/*pb2.py
+**/*pb2.pyi

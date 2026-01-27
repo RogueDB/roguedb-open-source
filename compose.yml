@@ -1,0 +1,7 @@
+services:
+  develop:
+    build:
+      dockerfile: dockerfiles/dockerfile.getting_started
+      context: .
+    volumes:
+      - .:/home/dev:rw

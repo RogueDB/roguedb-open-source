@@ -1,0 +1,4 @@
+common --enable_bzlmod
+common --registry=https://bcr.bazel.build
+
+build --action_env=BAZEL_CXXOPTS='-std=c++20' --repo_env=CC=clang --symlink_prefix=./distribution/bazel- --incompatible_disallow_empty_glob=False --cxxopt='-Wno-switch' --cxxopt='-O3'

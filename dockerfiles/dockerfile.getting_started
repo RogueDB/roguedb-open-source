@@ -1,0 +1,21 @@
+FROM ubuntu:24.04
+
+WORKDIR /home
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y clang curl wget git gnupg golang libssl-dev \
+    && git config --global --add safe.directory /home/dev \
+    && curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg \
+    && mv bazel-archive-keyring.gpg /usr/share/keyrings \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list \
+    && apt-get update && apt install -y bazel=7.5.0 \
+    && curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v30.0/protoc-30.0-linux-x86_64.zip \
+    && unzip protoc-30.0-linux-x86_64.zip -d /home/temp \
+    && ln -s /home/temp/bin/protoc /usr/local/bin/ \
+    && go install google.golang.org/protobuf/cmd/protoc-gen-go@latest \
+    && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+ENV PATH="/root/go/bin:${PATH}"
+
+WORKDIR /home/dev
