@@ -79,7 +79,7 @@ int main(int argc, char** argv)
     }
   ]
 })");
-    response = cpr::Post(
+    cpr::Response response = cpr::Post(
         cpr::Url{ std::format("{}/rest/insert", URL) },
         cpr::Bearer{ ENCODED_JWT },
         cpr::Header{{ "Content-Type", "application/json" }},
@@ -192,7 +192,7 @@ int main(int argc, char** argv)
         std::ifstream inputFile{ file.native() };
         std::stringstream buffer{};
         buffer << inputFile.rdbuf();
-        request.append(std::format("\"{}\",", buffer.str()))
+        request.append(std::format("\"{}\",", buffer.str()));
     }
     request.pop_back();
     request.append("]\n}");

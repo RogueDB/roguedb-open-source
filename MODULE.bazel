@@ -55,6 +55,7 @@ git_repository(
     build_file = "//third_party:cpr.BUILD",
     commit = "516cb3e5f4e38bede088f69fcf122c6089e38f00",
     remote = "https://github.com/libcpr/cpr.git",
+    patches = ["//third_party:cpr.PATCH"]
 )
 
 git_repository(
