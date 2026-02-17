@@ -8,12 +8,12 @@ from pathlib import Path
 # gRPC and Protocol Buffers Imports
 import grpc
 from grpc_status import rpc_status
+from google.protobuf.json_format import MessageToJson
 
-from roguedb.roguedb_pb2_grpc import RogueDBStub
-from roguedb.queries_pb2 import (
+from getting_started.roguedb_pb2_grpc import RogueDBStub
+from getting_started.roguedb_pb2 import (Test,
     Insert, Update, Remove, Basic, Search, 
     LogicalOperator, ComparisonOperator, Subscribe)
-from roguedb.test_pb2 import Test
 
 # External Dependency Requirements:
 # grpcio, protobuf, PyJWT
@@ -24,11 +24,10 @@ def create_jwt(service_account: str, expire_minutes: int = 60) -> str:
     with open(service_account) as input_file:
         key_data = json.load(input_file)
 
-    now = datetime.datetime.now(datetime.timezone.utc)
+    now = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=1)
     iat = int(time.mktime(now.timetuple()))
     exp = int(time.mktime((
         now + datetime.timedelta(minutes=expire_minutes)).timetuple()))
-
     payload = {
         "iat": iat,
         "exp": exp,
@@ -60,11 +59,10 @@ def detect_files(directories: list[str]) -> list[Path]:
 
 if __name__ == "__main__":
 	# See purchase confirmation emails for details and service_account.json.
-    url = "c-[YOUR_IDENTIFIER_FIRST_28_CHARACTERS].roguedb.dev"
-    api_key = "YOUR_API_KEY"
-    encoded_jwt = create_jwt("path/to/service_account.json")
-
-    ################################################
+    url = "DATABASE_URL"
+    api_key = "API_KEY"
+    encoded_jwt = create_jwt("/path/to/service_account.json")
+    
     #### Insert, Update, and Remove API Example ####
     ################################################
     
@@ -76,7 +74,7 @@ if __name__ == "__main__":
     request.messages.add()
 
     # See test.proto for the schema definition.
-    test = Test(attribute1=10)
+    test = Test(attribute1=10, attribute2=10, attribute3=True)
     request.messages[0].Pack(test)
     
     roguedb = RogueDBStub(
@@ -85,6 +83,7 @@ if __name__ == "__main__":
 
     def yield_request():
         yield request
+
 
     try:
         for _ in roguedb.insert(
@@ -96,6 +95,7 @@ if __name__ == "__main__":
     except grpc.RpcError as rpc_error:
         # Any errors get reported in status.
         status = rpc_status.from_call(rpc_error)
+        print(f"Insert Status: {rpc_error}")
     
     ###############################
     ##### Search API Examples #####
@@ -115,26 +115,36 @@ if __name__ == "__main__":
     expression.operands.add().Pack(Test(attribute1=1, attribute2=1, attribute3=True))
 
     expression.comparisons.append(ComparisonOperator.LESSER_EQUAL)
-    expression.operands.add().Pack(Test(attribute2=10, attribute2=10, attribute3=True))
+    expression.operands.add().Pack(Test(attribute1=11, attribute2=11, attribute3=True))
 
     def yield_search():
+        print("calling yield_search()")
+        print(f"search: {search}")
         yield search
 
-    for response in roguedb.search(
-        yield_search(),
-        metadata=[("authorization", f"Bearer {encoded_jwt}")]):
-        results = []
+    try:
+        for response in roguedb.search(
+            yield_search(),
+            metadata=[("authorization", f"Bearer {encoded_jwt}")]):
+            print("Looping?")
+            results = []
 
-        # Queries are zero-indexed. Partial results get sent
-        # and mapped to that index.
-        for result in response.results[0].messages:
-            test = Test()
-            response.results[0].Unpack(test)
-        
-        # Each response sends a list of the query ids finished
-        # with processing.
-        if 0 in response.finished:
-            pass # Finished processing.
+            # Queries are zero-indexed. Partial results get sent
+            # and mapped to that index.
+            print(f"# of messages: {len(results)}")
+            for result in response.results[0].messages:
+                test = Test()
+                response.results[0].Unpack(test)
+            
+            # Each response sends a list of the query ids finished
+            # with processing.
+            if 0 in response.finished:
+                pass # Finished processing.
+    except grpc.RpcError as rpc_error:
+        # Any errors get reported in status.
+        status = rpc_status.from_call(rpc_error)
+        print(f"Search Status: {rpc_error}")
+
 
     # Example of a basic non-indexed query. 
     # Search Query: Test.attribute1 < 1 AND Test.attribute2 != 10
@@ -158,12 +168,10 @@ if __name__ == "__main__":
 
     # All proto files should be sent in a list of
     # their contents. No modifications required.
-    for file in detect_files(directories=[
-        "absolute/path/to/protos/directory1",
-        "absolute/path/to/protos/directory2"]):
+    for file in detect_files(directories=["/home/dev/protos",]):
         with open(file) as input_file:
             subscribe.schemas.append(input_file.read())
 
     # Any schemas excluded will have associated data deleted.
     # Schema change failure results in no changes applied.
-    response = roguedb.subscribe(subscribe)
+    response = roguedb.subscribe(subscribe, metadata=[("authorization", f"Bearer {encoded_jwt}")])

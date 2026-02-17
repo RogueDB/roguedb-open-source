@@ -72,7 +72,6 @@ int main(int argc, char** argv)
     // Insert, Update, and Remove are identical in use.
     request.add_messages()->PackFrom(test);
     
-    // gRPC Connection
     std::unique_ptr<rogue::services::RogueDB::Stub> roguedb{ rogue::services::RogueDB::NewStub(
     grpc::CreateChannel(
         std::format("{}:443", URL),
@@ -96,7 +95,7 @@ int main(int argc, char** argv)
     //////////////////////////////////////
 
     {
-        // Example of a baisc index query.
+        // Example of a basic index query.
         rogue::services::Search search{};
         search.set_api_key(API_KEY);
         
@@ -152,7 +151,7 @@ int main(int argc, char** argv)
         }
     }
     {
-        // Example of a baisc non-indexed query.
+        // Example of a basic non-indexed query.
         rogue::services::Search search{};
         search.set_api_key(API_KEY);
         

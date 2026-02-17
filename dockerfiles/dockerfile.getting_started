@@ -4,17 +4,26 @@ WORKDIR /home
 
 RUN apt-get update \
     && apt-get upgrade -y \
-    && apt-get install -y clang curl wget git gnupg golang libssl-dev \
+    && apt-get install -y clang curl wget git gnupg golang libssl-dev default-jdk \
     && git config --global --add safe.directory /home/dev \
     && curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg \
     && mv bazel-archive-keyring.gpg /usr/share/keyrings \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list \
-    && apt-get update && apt install -y bazel=7.5.0 \
+    && apt-get update && apt install -y bazel=8.5.1 \
     && curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v30.0/protoc-30.0-linux-x86_64.zip \
     && unzip protoc-30.0-linux-x86_64.zip -d /home/temp \
     && ln -s /home/temp/bin/protoc /usr/local/bin/ \
     && go install google.golang.org/protobuf/cmd/protoc-gen-go@latest \
-    && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+    && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest \
+    && export JAVA_HOME="$(dirname $(dirname $(realpath $(which javac))))" \
+    && rm protoc-30.0-linux-x86_64.zip \
+    && curl -L https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh \
+    && chmod +x dotnet-install.sh \
+    && ./dotnet-install.sh --version 10.0.100 \
+    && export DOTNET_ROOT=$HOME/.dotnet \
+    && export PATH=$PATH:$HOME/.dotnet \
+    && dotnet new tool-manifest \
+    && dotnet tool install paket
 
 ENV PATH="/root/go/bin:${PATH}"
 

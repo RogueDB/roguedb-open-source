@@ -1,9 +1,9 @@
-import datetime
-import json
 import jwt
 import time
 import os
 from pathlib import Path
+import json
+import datetime
 
 # REST and JSON Imports
 import requests
@@ -12,12 +12,10 @@ import requests
 # PyJWT, requests
 
 def create_jwt(service_account: str, expire_minutes: int = 60) -> str:
-    # NOTE: Replace with file path to service_account.json
-    # from purchase confirmation email.
     with open(service_account) as input_file:
         key_data = json.load(input_file)
 
-    now = datetime.datetime.now(datetime.timezone.utc)
+    now = datetime.datetime.now() - datetime.timedelta(minutes=1)
     iat = int(time.mktime(now.timetuple()))
     exp = int(time.mktime((now + datetime.timedelta(minutes=expire_minutes)).timetuple()))
 
@@ -52,9 +50,9 @@ def detect_files(directories: list[str]) -> list[Path]:
 
 if __name__ == "__main__":
 	# See purchase confirmation emails for details and service_account.json.
-    url = "c-[YOUR_IDENTIFIER_FIRST_28_CHARACTERS].roguedb.dev"
-    api_key = "YOUR_API_KEY"
-    encoded_jwt = create_jwt("path/to/service_account.json")
+    url = "DATABASE_URL"
+    api_key = "API_KEY"
+    encoded_jwt = create_jwt("/path/to/service_account.json")
     
     headers = {
         "Authorization": f"Bearer {encoded_jwt}",
@@ -64,46 +62,44 @@ if __name__ == "__main__":
     #### Insert, Update, and Remove API Example ####
     ################################################
 
-    # NOTE: See queries.proto for all API definitions.
-    # Creating an Insert, Update, or Remove API with JSON. 
+    # Insert | Update | Remove request with JSON. 
     request = {
-        # api_key and messages match Insert definition in queries.proto
         "api_key" : api_key,
         "messages": [
             {
-                # Part after '/' will always be the proto package and message name
+                # @type: After '/', matches proto package and message name
                 "@type": "type.googleapis.com/rogue.services.Test",
                 
-                # Matches the field names for the message
+                # attribute1: Field name in Test
                 "attribute1" : 10,
-                "attribute2" : 5,
+                "attribute2" : 10,
+                "attribute3" : True
             } ]}
-
+    
     # No response given. Errors reported in status code.
     # REST call for Insert API.
     response = requests.post(
-        f"https://{url}/rest/insert", 
-        headers=headers, 
-        data=request)
-    
+        f"https://{url}/rest/insert",
+        headers=headers,
+        json=request)
+
     # REST call for Update API.
     response = requests.patch(
         f"https://{url}/rest/update", 
         headers=headers, 
-        data=request)
+        json=request)
     
     # REST call for Remove API.
     response = requests.delete(
         f"https://{url}/rest/remove", 
         headers=headers, 
-        data=request)
+        json=request)
     
-
     ###############################
     ##### Search API Examples #####
     ###############################
 
-    # NOTE: See queries.proto for full API.
+    # NOTE: See roguedb.proto for full API.
     # Example of a basic index query. 
     # For Test, attribute1, attribute2, and attribute3 form the index.
     # Search Query: 
@@ -137,14 +133,15 @@ if __name__ == "__main__":
         }] }
 
     # All search query types use this URL
-    response = requests.get(
+    response = requests.post(
         f"https://{url}/rest/search", 
         headers=headers, 
-        data=search)
-    
+        json=search)
+
     # Queries are zero-indexed. 
     # Results are mapped to that index.
-    for result in response.results[0]:
+    print(response.json())
+    for result in response.json()["results"]["0"]:
         pass # Will be JSON objects
     
     # Example of a basic non-indexed query.
@@ -175,21 +172,18 @@ if __name__ == "__main__":
     #####################################
     ##### Schema Change API Example #####
     #####################################
-    
     proto_file_definitions = []
     # Proto file definitions. No modifications required.
-    for file in detect_files(directories=[
-        "absolute/path/to/protos/directory1",
-        "absolute/path/to/protos/directory2"]):
+    for file in detect_files(directories=["/home/dev/protos",]):
         with open(file) as input_file:
             proto_file_definitions.schemas.append(input_file.read())
 
     # Any schemas excluded will have associated data deleted.
     # Schema change failure results in no changes applied.
     response = requests.post(
-        f"https://{url}/rest/search", 
+        f"https://{url}/rest/subscribe", 
         headers=headers, 
-        data={
+        json={
             "api_key" : api_key,
             "schemas" : proto_file_definitions
         })

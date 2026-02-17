@@ -4,6 +4,10 @@ google.golang.org/
 
 roguedb/
 roguedb-open-source/
+.pnpm-store/
+paket-files/
+packages/
+paket/
 
 **/*.cc
 **/*.pb.h
@@ -11,3 +15,4 @@ roguedb-open-source/
 **/*pb2_grpc.py
 **/*pb2.py
 **/*pb2.pyi
+getting_started/*.cs

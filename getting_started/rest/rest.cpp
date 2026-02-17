@@ -51,12 +51,8 @@ std::vector<std::filesystem::path> detectFiles(
 
 int main(int argc, char** argv)
 {
-    // DISCLAIMER: We do not currently test C++ with REST.
-    // Below code is best effort from documentation of popular
-    // single header libraries for REST and JWT.
-
     // See purchase confirmation emails for details and service_account.json.
-	const std::string API_KEY{ "YOUR_API_KEY" };
+    const std::string API_KEY{ "YOUR_API_KEY" };
     const std::string URL{ "c-[YOUR_IDENTIFIER_FIRST_28_CHARACTERS].roguedb.dev" };
     const std::string ENCODED_JWT{ createJwt() };
     
@@ -64,21 +60,23 @@ int main(int argc, char** argv)
     ///////  Insert, Update, and Remove API Example  ///////
     ////////////////////////////////////////////////////////
 
-    
-    // No response given. Errors reported in status code.
-    // REST call for Insert API.
-
+    // Insert | Update | Remove request with JSON. 
     std::string request{ "{\n\t\"api_key\": \"" };
     request.append(API_KEY);
+
+    // @type: After '/', matches proto package and message name
+    // attribute1: Field name in Test
     request.append(R"(",
   "messages": [
     {
       "@type": "type.googleapis.com/rogue.services.Test",
       "attribute1": 10,
-      "attribute2": 5
-    }
+      }
   ]
 })");
+
+    // REST call for Insert API.
+    // No response given. Errors reported in status code.
     cpr::Response response = cpr::Post(
         cpr::Url{ std::format("{}/rest/insert", URL) },
         cpr::Bearer{ ENCODED_JWT },
@@ -103,7 +101,6 @@ int main(int argc, char** argv)
     ////////  Search API Example  ////////
     //////////////////////////////////////
 
-    // NOTE: See queries.proto for full API.
     // Example of a basic index query. 
     // For Test, attribute1, attribute2, and attribute3 form the index.
     // Search Query: 
@@ -112,9 +109,6 @@ int main(int argc, char** argv)
     // Test.attribute1 <= 10 and Test.attribute2 <= 10 and Test.attribute3 <= true
     request = "{\n\"api_key";
     request.append(API_KEY);
-
-    // For @type, '/' will always be the proto package and message name
-    // attribute1, attribute2, and attribute3 match the field names in test.proto
     request.append(R"(",
   "queries": [
     {
@@ -154,7 +148,7 @@ int main(int argc, char** argv)
     request = "{\n\"api_key";
     request.append(API_KEY);
 
-    // Fields corresponds to the field ids in test.proto
+    // fields: // Corresponds to attribute1 and attribute2 field ids in Test
     request.append(R"(",
   "queries": [
     {

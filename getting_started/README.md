@@ -10,4 +10,5 @@ The changes required to be up and running are the following:
 The `service_account.json` in the email has values required to create a JWT token for authentication. Secure use is to keep these values in a keyvault or similar secret manager. 
 
 This directory is split into two groupings:
-- gRPC and Protocol Buffer
+- gRPC and Protocol Buffers under `grpc`
+- REST and JSON under `rest`

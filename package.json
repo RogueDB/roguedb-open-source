@@ -1,0 +1,16 @@
+{
+  "name": "roguedb-open-source",
+  "version": "1.0.0",
+  "description": "All the code examples for RogueDB plus code for technical blog posts and documentation.",
+  "type": "module",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.9.0",
+    "google-protobuf": "^3.21.2",
+    "axios": "^1.4.0",
+    "jsonwebtoken": "^9.0.0"
+    },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+    ]
+  }
+}

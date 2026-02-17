@@ -22,3 +22,13 @@ Given this, you can ignore all files that are named `BUILD`. Any files that cont
 ## Generated Files
 
 We extensively use gRPC and Protocol Buffers (Protobuf). Due to best practice, all generated files are not committed and tracked in this repo due to possible version incompatibilities with your development setup. The `getting_started/README.md` has links to both libraries documentation for instructions on how to setup. If you get errors about "missing" files linked back to the `protos/` directory, you have likely not generated the files.
+
+## Setup Notes
+
+All examples can be run off the docker images stored in `dockerfiles/`.
+
+For getting started: 
+
+- `docker compose run develop`
+- `dotnet paket install`
+- `bazel run @rules_dotnet//tools/paket2bazel -- --dependencies-file /home/dev/paket.dependencies  --output-folder /home/dev/deps`

@@ -77,7 +77,7 @@ func main() {
 	///////  Insert, Update, and Remove API Example  ///////
 	////////////////////////////////////////////////////////
 
-	// NOTE: See queries.proto for all API definitions.
+	// NOTE: See roguedb.proto for all API definitions.
 	// Creating an Insert, Update, or Remove API with JSON.
 	payload := map[string]interface{}{
 		"api_key": API_KEY,
@@ -116,7 +116,7 @@ func main() {
 	////////  Search API Example  ////////
 	//////////////////////////////////////
 
-	// Example of a baisc index query.
+	// Example of a basic index query.
 	// For Test, attribute1, attribute2, and attribute3 form the index.
 	// Search Query:
 	// Test.attribute1 >= 1 and Test.attribute2 >= 1 and Test.attribute3 >= true

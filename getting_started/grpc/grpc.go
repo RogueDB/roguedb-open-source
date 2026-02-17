@@ -141,7 +141,7 @@ func main() {
 	////////  Search API Example  ////////
 	//////////////////////////////////////
 
-	// Example of a baisc index query.
+	// Example of a basic index query.
 	searchStream, err := client.Search(ctx)
 	if err != nil {
 		panic(err)
@@ -206,7 +206,7 @@ func main() {
 	}
 	<-complete
 
-	// Example of a baisc non-indexed query.
+	// Example of a basic non-indexed query.
 	search = core_schemas.Search{ApiKey: API_KEY}
 	search.Queries = nil
 

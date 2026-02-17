@@ -34,7 +34,7 @@ service RogueDB
             delete: "/rest/remove",
             body: "*" }; }
 
-    rpc rest_search(Search) returns(stream Response) {
+    rpc rest_search(Search) returns(Response) {
         option (google.api.http) = {
             get: "/rest/search",
             body: "*" }; }
